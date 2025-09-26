@@ -6,6 +6,7 @@
 | S.No | Nome do Serviço AWS                     |
 | ---- | --------------------------------------- |
 | 1.   | Criar Cluster AWS EKS usando eksctl CLI |
+| 2.   | [Fundamentos do Docker]                 |
 
 
 
@@ -14,7 +15,7 @@
 | S.No | Nome do Serviço AWS                   |
 | ---- | ------------------------------------- |
 | 1.   | AWS EKS - Elastic Kubernetes Service  |
-| 2.   | [Fundamentos do Docker]               |
+
 
 
 
