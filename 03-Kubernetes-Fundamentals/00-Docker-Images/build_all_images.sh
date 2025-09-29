@@ -11,25 +11,32 @@ if [ -z "$1" ]; then
     echo "Exemplo: $0 1234samue/aula"
 fi
 
-for dir in */*/ ; do
-    if [ -f "$dir/Dockerfile" ]; then
-        # Extrai nome da pasta para tag
-        tag=$(basename "$dir")
-        echo "Buildando imagem: ${REPO_PREFIX}:$tag"
-        
+while IFS= read -r -d '' dockerfile; do
+    dir="$(dirname "$dockerfile")"
+    if [ -f "$dockerfile" ]; then
+        # Nome da pasta pai (ex: kubenginx)
+        parent="$(basename "$(dirname "$dir")")"
+        # Nome da pasta atual (ex: 1.0.0)
+        version="$(basename "$dir")"
+        # Se a pasta atual for igual à pai, usar latest
+        if [ "$parent" = "$version" ]; then
+            version="latest"
+        fi
+        tag="${parent}-${version}"
+        echo "Buildando imagem: ${REPO_PREFIX}:$tag (contexto: $dir)"
+
         # Para projetos Java Maven, o JAR será compilado dentro do Docker (multi-stage)
         if [ -f "$dir/pom.xml" ]; then
             echo "Projeto Maven detectado - JAR será compilado durante o build Docker"
         fi
-        
+
         docker build -t "${REPO_PREFIX}:$tag" "$dir"
 
-        # Se um prefixo foi fornecido (provável Docker Hub), fazer push
         if [ -n "$1" ]; then
             echo "Enviando imagem para o registry: ${REPO_PREFIX}:$tag"
             docker push "${REPO_PREFIX}:$tag"
         fi
     fi
-done
+done < <(find . -type f -name Dockerfile -print0)
 
 echo "Build de todas as imagens concluído."
