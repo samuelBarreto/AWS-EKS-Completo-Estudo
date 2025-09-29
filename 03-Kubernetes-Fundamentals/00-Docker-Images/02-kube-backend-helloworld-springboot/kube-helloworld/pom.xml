@@ -8,7 +8,7 @@
 		<version>2.2.7.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.stacksimplify</groupId>
+	<groupId>com.aula</groupId>
 	<artifactId>helloworld</artifactId>
 	<version>1.0.0</version>
 	<name>kube-helloworld</name>
@@ -52,25 +52,29 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<!-- Docker -->
 			<plugin>
-				<groupId>com.spotify</groupId>
-				<artifactId>dockerfile-maven-plugin</artifactId>
-				<version>1.4.6</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.3.0</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>com.aula.helloworld.HelloworldApplication</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
 				<executions>
 					<execution>
-						<id>default</id>
+						<id>make-assembly</id>
+						<phase>package</phase>
 						<goals>
-							<goal>build</goal>
-							<!-- <goal>push</goal> -->
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<repository>stacksimplify/${project.name}</repository>
-					<tag>${project.version}</tag>
-					<skipDockerInfo>true</skipDockerInfo>
-				</configuration>
 			</plugin>
 
 		</plugins>

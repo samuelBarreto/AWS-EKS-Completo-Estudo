@@ -1,10 +1,10 @@
-package com.stacksimplify.helloworld;
+package com.aula.helloworld;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.stacksimplify.helloworld.serverinfo.ServerInformationService;
+import com.aula.helloworld.serverinfo.ServerInformationService;
 
 @RestController
 public class HelloWorldController {

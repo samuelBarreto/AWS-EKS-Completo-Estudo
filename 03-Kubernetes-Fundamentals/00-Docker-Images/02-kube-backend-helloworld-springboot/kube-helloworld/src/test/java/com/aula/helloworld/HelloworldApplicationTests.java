@@ -1,4 +1,4 @@
-package com.stacksimplify.helloworld;
+package com.aula.helloworld;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
