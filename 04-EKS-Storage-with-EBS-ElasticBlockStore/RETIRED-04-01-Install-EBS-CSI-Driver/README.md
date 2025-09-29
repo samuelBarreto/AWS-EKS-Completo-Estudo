@@ -1,16 +1,15 @@
-# EKS Storage with EBS - Elastic Block Store
+# EKS Storage com EBS - Elastic Block Store
 
-## Step-01: Introduction
-- Create IAM Policy for EBS
-- Associate IAM Policy to Worker Node IAM Role
-- Install EBS CSI Driver
+## Passo-01: Introdução
+- Criar Política IAM para EBS
+- Associar Política IAM à Função IAM dos Worker Nodes
+- Instalar EBS CSI Driver
 
-## Step-02:  Create IAM policyy
-- Go to Services -> IAM
-- Create a Policy 
-  - Select JSON tab and copy paste the below JSON
+## Passo-02: Criar política IAM
+- Ir para Services -> IAM
+- Criar uma Política 
+  - Selecionar aba JSON e copiar/colar o JSON abaixo
 ```json
-
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -35,36 +34,36 @@
   ]
 }
 ```
-  - Review the same in **Visual Editor** 
-  - Click on **Review Policy**
-  - **Name:** Amazon_EBS_CSI_Driver
-  - **Description:** Policy for EC2 Instances to access Elastic Block Store
-  - Click on **Create Policy**
+  - Revisar o mesmo no **Visual Editor** 
+  - Clicar em **Review Policy**
+  - **Nome:** Amazon_EBS_CSI_Driver
+  - **Descrição:** Política para Instâncias EC2 acessarem Elastic Block Store
+  - Clicar em **Create Policy**
 
-## Step-03: Get the IAM role Worker Nodes using and Associate this policy to that role
-```
-# Get Worker node IAM Role ARN
+## Passo-03: Obter a função IAM que os Worker Nodes estão usando e Associar esta política a essa função
+```bash
+# Obter ARN da Função IAM do Worker node
 kubectl -n kube-system describe configmap aws-auth
 
-# from output check rolearn
+# do output verificar rolearn
 rolearn: arn:aws:iam::180789647333:role/eksctl-eksdemo1-nodegroup-eksdemo-NodeInstanceRole-IJN07ZKXAWNN
 ```
-- Go to Services -> IAM -> Roles 
-- Search for role with name **eksctl-eksdemo1-nodegroup** and open it
-- Click on **Permissions** tab
-- Click on **Attach Policies**
-- Search for **Amazon_EBS_CSI_Driver** and click on **Attach Policy**
+- Ir para Services -> IAM -> Roles 
+- Pesquisar por função com nome **eksctl-eksdemo1-nodegroup** e abrir
+- Clicar na aba **Permissions**
+- Clicar em **Attach Policies**
+- Pesquisar por **Amazon_EBS_CSI_Driver** e clicar em **Attach Policy**
 
-## Step-04: Deploy Amazon EBS CSI Driver  
-- Verify kubectl version, it should be 1.14 or later
-```
+## Passo-04: Implantar Amazon EBS CSI Driver  
+- Verificar versão do kubectl, deve ser 1.14 ou posterior
+```bash
 kubectl version --client --short
 ```
-- Deploy Amazon EBS CSI Driver
-```
-# Deploy EBS CSI Driver
+- Implantar Amazon EBS CSI Driver
+```bash
+# Implantar EBS CSI Driver
 kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=master"
 
-# Verify ebs-csi pods running
+# Verificar pods ebs-csi executando
 kubectl get pods -n kube-system
 ```

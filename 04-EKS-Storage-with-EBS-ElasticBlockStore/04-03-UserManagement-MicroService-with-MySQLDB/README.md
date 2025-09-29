@@ -1,25 +1,24 @@
-# Deploy UserManagement Service with MySQL Database
+# Deploy UserManagement Service com Banco de Dados MySQL
 
+## Passo-01: Introdução
+- Vamos implantar um **Microserviço de Gerenciamento de Usuários** que se conectará ao schema do banco de dados MySQL **usermgmt** durante a inicialização.
+- Então podemos testar as seguintes APIs:
+  - Criar Usuários
+  - Listar Usuários
+  - Deletar Usuário
+  - Status de Saúde
 
-## Step-01: Introduction
-- We are going to deploy a **User Management Microservice** which will connect to MySQL Database schema **usermgmt** during startup.
-- Then we can test the following APIs
-  - Create Users
-  - List Users
-  - Delete User
-  - Health Status 
-
-| Kubernetes Object  | YAML File |
+| Objeto Kubernetes  | Arquivo YAML |
 | ------------- | ------------- |
 | Deployment, Environment Variables  | 06-UserManagementMicroservice-Deployment.yml  |
 | NodePort Service  | 07-UserManagement-Service.yml  |
 
-## Step-02: Create following Kubernetes manifests
+## Passo-02: Criar os seguintes manifestos Kubernetes
 
-### Create User Management Microservice Deployment manifest
-- **Environment Variables**
+### Criar manifesto Deployment do Microserviço de Gerenciamento de Usuários
+- **Variáveis de Ambiente**
 
-| Key Name  | Value |
+| Nome da Chave  | Valor |
 | ------------- | ------------- |
 | DB_HOSTNAME  | mysql |
 | DB_PORT  | 3306  |
@@ -27,58 +26,64 @@
 | DB_USERNAME  | root  |
 | DB_PASSWORD | dbpassword11  |  
 
-### Create User Management Microservice NodePort Service manifest
-- NodePort Service
+### Criar manifesto NodePort Service do Microserviço de Gerenciamento de Usuários
+- Serviço NodePort
 
-## Step-03: Create UserManagement Service Deployment & Service 
-```
-# Create Deployment & NodePort Service
+## Passo-03: Criar Deployment e Service do UserManagement
+```bash
+# Criar Deployment & NodePort Service
 kubectl apply -f kube-manifests/
 
-# List Pods
+# Listar Pods
 kubectl get pods
 
-# Verify logs of Usermgmt Microservice pod
+# Verificar logs do pod do Microserviço Usermgmt
 kubectl logs -f <Pod-Name>
 
-# Verify sc, pvc, pv
+# Verificar sc, pvc, pv
 kubectl get sc,pvc,pv
 ```
-- **Problem Observation:** 
-  - If we deploy all manifests at a time, by the time mysql is ready our `User Management Microservice` pod will be restarting multiple times due to unavailability of Database. 
-  - To avoid such situations, we can apply `initContainers` concept to our User management Microservice `Deployment manifest`.
-  - We will see that in our next section but for now lets continue to test the application
-- **Access Application**
-```
-# List Services
+
+- **Observação do Problema:** 
+  - Se implantarmos todos os manifestos ao mesmo tempo, quando o MySQL estiver pronto, nosso pod do `Microserviço de Gerenciamento de Usuários` estará reiniciando várias vezes devido à indisponibilidade do banco de dados. 
+  - Para evitar essas situações, podemos aplicar o conceito de `initContainers` ao nosso manifesto `Deployment` do Microserviço de Gerenciamento de Usuários.
+  - Veremos isso em nossa próxima seção, mas por enquanto vamos continuar testando a aplicação
+
+- **Acessar Aplicação**
+```bash
+# Listar Services
 kubectl get svc
 
-# Get Public IP
+# Obter IP Público
 kubectl get nodes -o wide
 
-# Access Health Status API for User Management Service
+# Acessar API de Status de Saúde do Serviço de Gerenciamento de Usuários
 http://<EKS-WorkerNode-Public-IP>:31231/usermgmt/health-status
 ```
 
-## Step-04: Test User Management Microservice using Postman
-### Download Postman client 
+## Passo-04: Testar Microserviço de Gerenciamento de Usuários usando Postman
+### Baixar cliente Postman 
 - https://www.postman.com/downloads/ 
-### Import Project to Postman
-- Import the postman project `AWS-EKS-Estudos -Microservices.postman_collection.json` present in folder `04-03-UserManagement-MicroService-with-MySQLDB`
-### Create Environment in postman
-- Go to Settings -> Click on Add
-- **Environment Name:** UMS-NodePort
-  - **Variable:** url
-  - **Initial Value:** http://WorkerNode-Public-IP:31231
-  - **Current Value:** http://WorkerNode-Public-IP:31231
-  - Click on **Add**
-### Test User Management Services
-- Select the environment before calling any API
-- **Health Status API**
+
+### Importar Projeto para Postman
+- Importar o projeto postman `AWS-EKS-Estudos -Microservices.postman_collection.json` presente na pasta `04-03-UserManagement-MicroService-with-MySQLDB`
+
+### Criar Ambiente no Postman
+- Ir para Settings -> Clicar em Add
+- **Nome do Ambiente:** UMS-NodePort
+  - **Variável:** url
+  - **Valor Inicial:** http://WorkerNode-Public-IP:31231
+  - **Valor Atual:** http://WorkerNode-Public-IP:31231
+  - Clicar em **Add**
+
+### Testar Serviços de Gerenciamento de Usuários
+- Selecionar o ambiente antes de chamar qualquer API
+- **API de Status de Saúde**
   - URL: `{{url}}/usermgmt/health-status`
-- **Create User Service**
+
+- **Serviço Criar Usuário**
   - URL: `{{url}}/usermgmt/user`
-  - `url` variable will replaced from environment we selected
+  - A variável `url` será substituída do ambiente que selecionamos
 ```json
     {
         "username": "admin1",
@@ -90,10 +95,11 @@ http://<EKS-WorkerNode-Public-IP>:31231/usermgmt/health-status
         "password": "Pass@123"
     }
 ```
-- **List User Service**
+
+- **Serviço Listar Usuários**
   - URL: `{{url}}/usermgmt/users`
 
-- **Update User Service**
+- **Serviço Atualizar Usuário**
   - URL: `{{url}}/usermgmt/user`
 ```json
     {
@@ -106,31 +112,32 @@ http://<EKS-WorkerNode-Public-IP>:31231/usermgmt/health-status
         "password": "Pass@123"
     }
 ```  
-- **Delete User Service**
+
+- **Serviço Deletar Usuário**
   - URL: `{{url}}/usermgmt/user/admin1`
 
-## Step-05: Verify Users in MySQL Database
-```
-# Connect to MYSQL Database
+## Passo-05: Verificar Usuários no Banco de Dados MySQL
+```bash
+# Conectar ao Banco de Dados MYSQL
 kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -u root -pdbpassword11
 
-# Verify usermgmt schema got created which we provided in ConfigMap
+# Verificar se o schema usermgmt foi criado que fornecemos no ConfigMap
 mysql> show schemas;
 mysql> use usermgmt;
 mysql> show tables;
 mysql> select * from users;
 ```
 
-## Step-06: Clean-Up
-- Delete all k8s objects created as part of this section
-```
-# Delete All
+## Passo-06: Limpeza
+- Deletar todos os objetos k8s criados como parte desta seção
+```bash
+# Deletar Tudo
 kubectl delete -f kube-manifests/
 
-# List Pods
+# Listar Pods
 kubectl get pods
 
-# Verify sc, pvc, pv
+# Verificar sc, pvc, pv
 kubectl get sc,pvc,pv
 ```
 
