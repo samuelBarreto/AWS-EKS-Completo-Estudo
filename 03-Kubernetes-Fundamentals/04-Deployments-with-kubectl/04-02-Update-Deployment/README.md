@@ -1,12 +1,15 @@
 # Kubernetes - Update Deployments
 
 ## Step-00: Introduction
+
 # Kubernetes - Atualizar Deployments
   - Set Image
+
 ## Passo-00: Introdução
 - Podemos atualizar deployments usando duas opções:
   - Setar Imagem
   - Editar Deployment
+  
 - **Observation:** Please Check the container name in `spec.container.name` yaml output and make a note of it and 
 ## Passo-01: Atualizando a versão da aplicação de V1 para V2 usando a opção "Set Image"
 ### Atualizar Deployment
@@ -16,8 +19,8 @@
 kubectl get deployment my-first-deployment -o yaml
 
 # Atualizar Deployment - DEVE FUNCIONAR AGORA
-kubectl set image deployment/<nome-do-deployment> <nome-do-container>=<imagem-do-container> --record=true
-kubectl set image deployment/my-first-deployment kubenginx=aula/kubenginx:2.0.0 --record=true
+kubectl set image deployment/<nome-do-deployment> <nome-do-container>=<imagem-do-container> 
+kubectl set image deployment/my-first-deployment aula=1234samue/aula:2.0.0 
 ```
 ### Verificar Status do Rollout (Status do Deployment)
 - **Observação:** Por padrão, o rollout acontece no modelo rolling update, então não há downtime.
@@ -28,6 +31,7 @@ kubectl rollout status deployment/my-first-deployment
 # Verificar Deployment
 kubectl get deploy
   - Verify the Events and understand that Kubernetes by default do  "Rolling Update"  for new application releases. 
+
 ### Descrever Deployment
 - **Observação:**
   - Verifique os eventos e entenda que o Kubernetes faz "Rolling Update" por padrão para novas versões da aplicação.

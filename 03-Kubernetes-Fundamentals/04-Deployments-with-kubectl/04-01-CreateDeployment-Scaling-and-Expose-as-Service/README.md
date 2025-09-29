@@ -16,7 +16,7 @@
 ```
 # Create Deployment
 kubectl create deployment <Deplyment-Name> --image=<Container-Image>
-kubectl create deployment my-first-deployment --image=aula/kubenginx:1.0.0 
+kubectl create deployment my-first-deployment --image=1234samue/aula:kubenginx-1.0.0
 
 # Verify Deployment
 kubectl get deployments
@@ -29,27 +29,12 @@ kubectl describe deployment my-first-deployment
 # Verify ReplicaSet
 kubectl get rs
 
-# Criar Deployment
-kubectl create deployment <nome-do-deployment> --image=<imagem-do-container>
-kubectl create deployment my-first-deployment --image=aula/kubenginx:1.0.0 
-
-# Verificar Deployment
-kubectl get deployments
-kubectl get deploy 
-
-# Descrever Deployment
-kubectl describe deployment <nome-do-deployment>
-kubectl describe deployment my-first-deployment
-
-# Verificar ReplicaSet
-kubectl get rs
-
-# Verificar Pod
-kubectl get po
 # Verify Pod
 kubectl get po
+
 ## Passo-03: Escalando um Deployment
 - Escale o deployment para aumentar o número de réplicas (pods)
+
 ## Step-03: Scaling a Deployment
 - Scale the deployment to increase the number of replicas (pods)
 ```
@@ -109,8 +94,10 @@ Observação: Anote a porta que começa com 3 (Exemplo: 80:3xxxx/TCP). Capture a
 
 # Obter IP público dos nós de trabalho
 kubectl get nodes -o wide
+
 Observação: Anote o "EXTERNAL-IP" se seu cluster Kubernetes estiver no AWS EKS.
 # Get Public IP of Worker Nodes
+
 **Acessar a aplicação usando o IP público**
 Observation: Make a note of "EXTERNAL-IP" if your Kubernetes cluster is setup on AWS EKS.
 ```

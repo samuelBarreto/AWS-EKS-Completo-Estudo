@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
       - name: my-helloworld-app
-        image: aula/kube-helloworld:1.0.0
+        image: 1234samue/aula:kube-helloworld

@@ -15,7 +15,7 @@
 - Criar um service ClusterIP para balancear a carga da aplicação backend.
 ```
 # Criar Deployment para o Backend Rest App
-kubectl create deployment my-backend-rest-app --image=aula/kube-helloworld:1.0.0 
+kubectl create deployment my-backend-rest-app --image=1234samue/aula:kube-helloworld
 kubectl get deploy
 
 # Criar Service ClusterIp para o Backend Rest App
@@ -52,7 +52,7 @@ server {
 - **Fonte da aplicação Frontend Nginx Reverse Proxy** [kube-frontend-nginx](../00-Docker-Images/03-kube-frontend-nginx)
 ```
 # Criar Deployment para o Frontend Nginx Proxy
-kubectl create deployment my-frontend-nginx-app --image=aula/kube-frontend-nginx:1.0.0 
+kubectl create deployment my-frontend-nginx-app --image=1234samue/aula:frontend-nginx-1.0.0
 kubectl get deploy
 
 # Criar Service NodePort para o Frontend Nginx Proxy

@@ -1,0 +1,13 @@
+apiVersion: 
+kind: 
+metadata:
+
+spec:
+    
+# Tipos de Objetos do Kubernetes
+# Pod, ReplicaSet, Deployment, Service e muitos outros
+
+# apiVersion: versão dos objetos do k8s
+# kind: tipo de objeto do k8s
+# metadata: define nome e labels para os objetos do k8s
+# spec: especificação ou definição real dos objetos do k8s
