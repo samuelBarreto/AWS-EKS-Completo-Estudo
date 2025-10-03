@@ -5,9 +5,9 @@
 - O espaço após os dois pontos é obrigatório para diferenciar chave e valor
 ```yml
 # Definindo pares chave-valor simples
-nome: kalyan
+nome: samuel
 idade: 23
-cidade: Hyderabad
+cidade: barueri
 ```
 
 ## Passo-02: Dicionário / Mapa
@@ -15,18 +15,18 @@ cidade: Hyderabad
 - Mesma quantidade de espaço em branco é exigida para todos os itens dentro de um dicionário
 ```yml
 pessoa:
-  nome: kalyan
+  nome: samuel
   idade: 23
-  cidade: Hyderabad
+  cidade: barueri
 ```
 
 ## Passo-03: Array / Listas
 - O traço indica um elemento de uma lista
 ```yml
 pessoa: # Dicionário
-  nome: kalyan
+  nome: samuel
   idade: 23
-  cidade: Hyderabad
+  cidade: barueri
   hobbies: # Lista  
     - ciclismo
     - culinária
@@ -37,9 +37,9 @@ pessoa: # Dicionário
 - O traço indica um elemento de uma lista
 ```yml
 pessoa: # Dicionário
-  nome: kalyan
+  nome: samuel
   idade: 23
-  cidade: Hyderabad
+  cidade: barueri
   hobbies: # Lista  
     - ciclismo
     - culinária

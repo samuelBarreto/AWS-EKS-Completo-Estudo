@@ -80,6 +80,8 @@ Neste demo, vamos entender e implementar o **Amazon EKS Pod Identity Agent (PIA)
 3. Procure por **EKS Pod Identity Agent**  
 4. Clique em **Next** → **Create**  
 
+![EKS Pod Identity Agen](images/Pod_Identity_Agent.png)
+
 Isso instala um **DaemonSet** (`eks-pod-identity-agent`) que habilita associações de Pod Identity.
 
 ```yaml
@@ -181,6 +183,8 @@ command terminated with exit code 254
   * Role IAM: `EKS-PodIdentity-S3-ReadOnly-Role-101`  
   * Clique em **create**  
 
+![Access](images/Access.png)
+
 ---
 
 ## Passo-05: Testar novamente
@@ -203,6 +207,9 @@ kubectl get pods
 ```bash
 # Listar buckets S3
 kubectl exec -it aws-cli -- aws s3 ls
+logs
+2023-11-29 12:56:26 cf-templates-f1bvxae1lqqm-us-east-1
+2023-11-23 14:13:14 cf-templates-f1bvxae1lqqm-us-east-2
 ```
 
 **Observação:** Desta vez deve **funcionar**, listando todos os buckets S3.

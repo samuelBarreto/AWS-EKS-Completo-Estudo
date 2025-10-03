@@ -18,6 +18,6 @@ spec:
     spec:
       containers:
         - name: frontend-nginxapp
-          image: 1234samue/aula:frontend-nginx-1.0.0
+          image: 1234samue/aula:frontend-nginx-2.0.0
           ports:
             - containerPort: 80

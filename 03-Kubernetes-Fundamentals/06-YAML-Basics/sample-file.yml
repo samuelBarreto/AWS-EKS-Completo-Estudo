@@ -1,14 +1,14 @@
 # Simple Key value Pairs
 person: # Dictionary
-  name: kalyan
+  name: SAMUEL
   age: 23
-  city: Hyderabd
+  city: Sao Paulo
   hobbies: # List
-    - cooking
-    - cycling
+    - jogging
+    - running
   friends: # Multiple lists
     - name: friend1
-      age: 23
+      age: 13
     - name: friend2
       age: 22
 --- # YAML Document Separator

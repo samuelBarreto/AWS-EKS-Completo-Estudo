@@ -3,6 +3,8 @@
 ## Passo-01: Introdução
 - Vamos criar um banco de dados MySQL com armazenamento persistente usando volumes AWS EBS
 
+O Amazon EKS Pod Identity Agent é necessário para o EBS CSI Driver funcionar corretamente no EKS!
+
 | Objeto Kubernetes                                         | Arquivo YAML |
 | --------------------------------------------------------- | -------------------------------- |
 | Storage Class                                             | 01-storage-class.yml             |
@@ -19,7 +21,9 @@
 ### Criar manifesto Persistent Volume Claims
 ```bash
 # Criar Storage Class & PVC
-kubectl apply -f kube-manifests/
+kubectl apply -f kube-manifests/01-storage-class.yml
+kubectl apply -f kube-manifests/02-persistent-volume-claim.yml
+kubectl apply -f kube-manifests/03-UserManagement-ConfigMap.yml
 
 # Listar Storage Classes
 kubectl get sc
@@ -45,7 +49,8 @@ kubectl get pv
 ## Passo-03: Criar banco de dados MySQL com todos os manifestos acima
 ```bash
 # Criar banco de dados MySQL
-kubectl apply -f kube-manifests/
+kubectl apply -f kube-manifests/deploy/04-mysql-deployment.yml
+kubectl apply -f kube-manifests/deploy/05-mysql-clusterip-service.yml
 
 # Listar Storage Classes
 kubectl get sc
@@ -67,6 +72,18 @@ kubectl get pods -l app=mysql
 ```bash
 # Conectar ao banco de dados MYSQL
 kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -pdbpassword11
+
+mysql> show schemas;
++---------------------+
+| Database            |
++---------------------+
+| information_schema  |
+| #mysql50#lost+found |
+| mysql               |
+| performance_schema  |
+| usermgmt    <-       |
++---------------------+
+5 rows in set (0.01 sec)
 
 [ou]
 
