@@ -51,6 +51,13 @@ server {
 - **Local da imagem Docker:** https://hub.docker.com/repository/docker/aula/kube-frontend-nginx
 - **Fonte da aplicação Frontend Nginx Reverse Proxy** [kube-frontend-nginx](../00-Docker-Images/03-kube-frontend-nginx)
 ```
+# Adicinar no segurity Groups  -> sg-0b730dbc65806312a - eksctl-eksdemo1-nodegroup-eksdemo1-ng-public1-remoteAccess
+Inbound Rules 
+
+| type    | protocol | port range | source    |
+| ------- | -------- | ---------- | --------- |
+| All TCP |   TCP    | 0- 65535   | 0.0.0.0/0 |
+
 # Criar Deployment para o Frontend Nginx Proxy
 kubectl create deployment my-frontend-nginx-app --image=1234samue/aula:frontend-nginx-2.0.0
 kubectl get deploy
