@@ -34,8 +34,20 @@
 # Criar Deployment & NodePort Service
 kubectl apply -f kube-manifests/
 
+
+# Criação de tabela usando Job do Kubernetes
+kubectl apply -f jobs/
+
+# Verificar logs do Job
+kubectl logs job <name>
+
 # Listar Pods
 kubectl get pods
+
+NAME                                     READY   STATUS    RESTARTS   AGE
+mysql-854c6464b5-lb6hh                   1/1     Running   0          19s
+usermgmt-microservice-795b557b9f-hzsdd   1/1     Running   0          18s
+usermgmt-microservice-795b557b9f-pkst5   1/1     Running   0          18s
 
 # Verificar logs do pod do Microserviço Usermgmt
 kubectl logs -f <Pod-Name>
@@ -77,58 +89,269 @@ http://<EKS-WorkerNode-Public-IP>:31231/usermgmt/health-status
   - Clicar em **Add**
 
 ### Testar Serviços de Gerenciamento de Usuários
-- Selecionar o ambiente antes de chamar qualquer API
-- **API de Status de Saúde**
-  - URL: `{{url}}/usermgmt/health-status`
 
-- **Serviço Criar Usuário**
-  - URL: `{{url}}/usermgmt/user`
-  - A variável `url` será substituída do ambiente que selecionamos
-```json
-    {
-        "username": "admin1",
-        "email": "dkalyanreddy@gmail.com",
-        "role": "ROLE_ADMIN",
-        "enabled": true,
-        "firstname": "fname1",
-        "lastname": "lname1",
-        "password": "Pass@123"
-    }
+#### **1. Health Check da API**
+```bash
+curl -X GET http://<NODE_IP>:30090/health
 ```
 
-- **Serviço Listar Usuários**
-  - URL: `{{url}}/usermgmt/users`
-
-- **Serviço Atualizar Usuário**
-  - URL: `{{url}}/usermgmt/user`
+**Resposta esperada:**
 ```json
-    {
-        "username": "admin1",
-        "email": "dkalyanreddy@gmail.com",
-        "role": "ROLE_ADMIN",
-        "enabled": true,
-        "firstname": "fname2",
-        "lastname": "lname2",
-        "password": "Pass@123"
-    }
-```  
+{
+    "status": "OK",
+    "message": "User Management API is running",
+    "timestamp": "2024-01-01T10:00:00.000Z"
+}
+```
 
-- **Serviço Deletar Usuário**
-  - URL: `{{url}}/usermgmt/user/admin1`
+#### **2. Criar Usuário**
+```bash
+curl -X POST http://54.90.145.97:30090/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "João Silva",
+    "email": "joao.silva@email.com",
+    "age": 30
+  }'
+```
+
+**Resposta esperada:**
+```json
+{
+    "success": true,
+    "message": "User created successfully",
+    "data": {
+        "id": 1,
+        "name": "João Silva",
+        "email": "joao.silva@email.com",
+        "age": 30
+    }
+}
+```
+
+#### **3. Listar Todos os Usuários**
+```bash
+curl -X GET http://<NODE_IP>:30090/users
+```
+
+**Resposta esperada:**
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "name": "João Silva",
+            "email": "joao.silva@email.com",
+            "age": 30,
+            "created_at": "2024-01-01T10:00:00.000Z",
+            "updated_at": "2024-01-01T10:00:00.000Z"
+        }
+    ],
+    "count": 1
+}
+```
+
+#### **4. Buscar Usuário por ID**
+```bash
+curl -X GET http://<NODE_IP>:30090/users/1
+```
+
+**Resposta esperada:**
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "João Silva",
+        "email": "joao.silva@email.com",
+        "age": 30,
+        "created_at": "2024-01-01T10:00:00.000Z",
+        "updated_at": "2024-01-01T10:00:00.000Z"
+    }
+}
+```
+
+#### **5. Atualizar Usuário**
+```bash
+curl -X PUT http://<NODE_IP>:30090/users/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "João Silva Santos",
+    "email": "joao.santos@email.com",
+    "age": 31
+  }'
+```
+
+**Resposta esperada:**
+```json
+{
+    "success": true,
+    "message": "User updated successfully",
+    "data": {
+        "id": 1,
+        "name": "João Silva Santos",
+        "email": "joao.santos@email.com",
+        "age": 31
+    }
+}
+```
+
+#### **6. Deletar Usuário**
+```bash
+curl -X DELETE http://<NODE_IP>:30090/users/1
+```
+
+**Resposta esperada:**
+```json
+{
+    "success": true,
+    "message": "User deleted successfully"
+}
+```
+
+### **🔧 Configuração de URLs**
+
+#### **Obter IP do Nó:**
+```bash
+kubectl get nodes -o wide
+```
+
+#### **Alternativas de Acesso:**
+
+**1. Via NodePort (Acesso Externo):**
+```bash
+# Substitua <NODE_IP> pelo IP real do nó
+curl http://<NODE_IP>:30090/health
+```
+
+**2. Via Port Forward (Acesso Local):**
+```bash
+# Em um terminal, execute:
+kubectl port-forward service/usermgmt-microservice-nodeport 30090:3000
+
+# Em outro terminal, teste:
+curl http://localhost:30090/health
+```
+
+**3. Via ClusterIP (Interno):**
+```bash
+# Dentro do cluster
+curl http://usermgmt-microservice-service:3000/health
+```
+
+### **📊 Exemplos de Teste Completo**
+
+```bash
+# 1. Verificar se API está funcionando
+curl -X GET http://<NODE_IP>:30090/health
+
+# 2. Criar primeiro usuário
+curl -X POST http://<NODE_IP>:30090/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Maria Silva","email":"maria@email.com","age":25}'
+
+# 3. Criar segundo usuário
+curl -X POST http://<NODE_IP>:30090/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Pedro Santos","email":"pedro@email.com","age":35}'
+
+# 4. Listar todos os usuários
+curl -X GET http://<NODE_IP>:30090/users
+
+# 5. Buscar usuário específico
+curl -X GET http://<NODE_IP>:30090/users/1
+
+# 6. Atualizar usuário
+curl -X PUT http://<NODE_IP>:30090/users/1 \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Maria Silva Santos","email":"maria.santos@email.com","age":26}'
+
+# 7. Deletar usuário
+curl -X DELETE http://<NODE_IP>:30090/users/2
+
+# 8. Verificar usuários restantes
+curl -X GET http://<NODE_IP>:30090/users
+```
 
 ## Passo-05: Verificar Usuários no Banco de Dados MySQL
 ```bash
-# Conectar ao Banco de Dados MYSQL
-kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -u root -pdbpassword11
+# Conectar ao Banco de Dados MySQL
+kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql-service -u root -pdbpassword11
 
-# Verificar se o schema usermgmt foi criado que fornecemos no ConfigMap
+# Dentro do MySQL, executar:
+USE usermanagement;
+SELECT * FROM users;
+
+# Verificar se o schema usermanagement foi criado
 mysql> show schemas;
-mysql> use usermgmt;
+mysql> use usermanagement;
 mysql> show tables;
+mysql> describe users;
 mysql> select * from users;
 ```
 
-## Passo-06: Limpeza
+## Passo-06: Status Atual do Projeto
+
+### **✅ Projeto Atualizado e Funcionando**
+
+**API de Gerenciamento de Usuários:**
+- **URL:** http://54.90.145.97:30090
+- **Status:** ✅ Funcionando
+- **Banco de Dados:** MySQL (usermgmt.users)
+- **Endpoints:** CRUD completo implementado
+
+**Recursos Kubernetes:**
+- **Deployment:** usermgmt-microservice (2 réplicas)
+- **Services:** ClusterIP + NodePort
+- **Storage:** EBS via PVC
+
+### **🚀 Scripts e Jobs Disponíveis**
+
+**Setup do Banco de Dados:**
+```bash
+# Script automatizado
+chmod +x setup-database.sh
+./setup-database.sh
+
+# Ou Job manual
+kubectl apply -f kube-manifests/08-mysql-table-setup-job-advanced.yml
+kubectl wait --for=condition=complete job/mysql-table-setup-advanced --timeout=60s
+kubectl logs job/mysql-table-setup-advanced
+```
+
+**Dados de Exemplo:**
+```bash
+# Inserir dados de exemplo
+kubectl apply -f kube-manifests/09-mysql-sample-data-job.yml
+kubectl wait --for=condition=complete job/mysql-sample-data --timeout=60s
+kubectl logs job/mysql-sample-data
+```
+
+**Teste da API:**
+```bash
+chmod +x test-api.sh
+./test-api.sh 54.90.145.97
+```
+
+**Limpeza:**
+```bash
+chmod +x cleanup.sh
+./cleanup.sh
+```
+
+### **📊 Endpoints Testados**
+
+| Método | Endpoint | Status |
+|--------|----------|--------|
+| GET | `/health` | ✅ OK |
+| GET | `/users` | ✅ OK |
+| POST | `/users` | ✅ OK |
+| GET | `/users/:id` | ✅ OK |
+| PUT | `/users/:id` | ✅ OK |
+| DELETE | `/users/:id` | ✅ OK |
+
+## Passo-07: Limpeza
 - Deletar todos os objetos k8s criados como parte desta seção
 ```bash
 # Deletar Tudo

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-management-api
+  labels:
+    app: user-management-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: user-management-api
+  template:
+    metadata:
+      labels:
+        app: user-management-api
+    spec:
+      containers:
+      - name: user-api
+        image: 1234samue/aula:user-management-api-1.0.0
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: DB_HOST
+          value: "mysql-service"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASSWORD
+          value: "dbpassword11"
+        - name: DB_NAME
+          value: "usermanagement"
+        - name: DB_PORT
+          value: "3306"
+        - name: PORT
+          value: "3000"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5

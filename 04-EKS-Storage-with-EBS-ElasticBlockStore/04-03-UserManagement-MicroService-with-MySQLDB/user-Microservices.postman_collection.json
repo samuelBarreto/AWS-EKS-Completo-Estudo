@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "ba15e203-a37e-4a31-a94e-e8bfe37ad588",
-		"name": "AWS-EKS-Estudos -Microservices",
+		"name": "AWS-EKS-Estudos-Microservices",
 		"description": "Microservices Deployed to EKS and Fargate clusters as part of Estudos  course",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -15,13 +15,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/usermgmt/health-status",
+							"raw": "{{url}}/health",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"usermgmt",
-								"health-status"
+								"health"
 							]
 						}
 					},
@@ -41,19 +40,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "    {\n        \"username\": \"microtest1\",\n        \"email\": \"dkalyanreddy@gmail.com\",\n        \"role\": \"ROLE_ADMIN\",\n        \"enabled\": true,\n        \"firstname\": \"MicroFName\",\n        \"lastname\": \"MicroLname\",\n        \"password\": \"Pass@123\"\n    }",
+							"raw": "{\n    \"name\": \"João Silva\",\n    \"email\": \"joao.silva@email.com\",\n    \"age\": 30\n}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "{{url}}/usermgmt/user",
+							"raw": "{{url}}/users",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"usermgmt",
-								"user"
+								"users"
 							]
 						}
 					},
@@ -65,12 +63,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/usermgmt/users",
+							"raw": "{{url}}/users",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"usermgmt",
 								"users"
 							]
 						}
@@ -91,19 +88,37 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "    {\n        \"username\": \"admin1\",\n        \"email\": \"dkalyanreddy@gmail.com\",\n        \"role\": \"ROLE_ADMIN\",\n        \"enabled\": true,\n        \"firstname\": \"fname2\",\n        \"lastname\": \"lname2\",\n        \"password\": \"Pass@123\"\n    }",
+							"raw": "{\n    \"name\": \"João Silva Santos\",\n    \"email\": \"joao.santos@email.com\",\n    \"age\": 31\n}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "{{url}}/usermgmt/user",
+							"raw": "{{url}}/users/1",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"usermgmt",
-								"user"
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserManagement-GetUserById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"1"
 							]
 						}
 					},
@@ -115,73 +130,18 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/usermgmt/user/microtest2",
+							"raw": "{{url}}/users/1",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"usermgmt",
-								"user",
-								"microtest2"
+								"users",
+								"1"
 							]
 						}
 					},
 					"response": []
 				},
-				{
-					"name": "UserMgmt-NotificationService-Health-Status",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/usermgmt/notification-health-status",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"usermgmt",
-								"notification-health-status"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UserMgmt-NotificationService-Info",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/usermgmt/notification-service-info",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"usermgmt",
-								"notification-service-info"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UserMgmt-NotificationService-XRay",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/usermgmt/notification-xray",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"usermgmt",
-								"notification-xray"
-							]
-						}
-					},
-					"response": []
-				}
 			],
 			"protocolProfileBehavior": {}
 		}
