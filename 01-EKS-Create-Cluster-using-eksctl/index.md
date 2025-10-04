@@ -2,7 +2,7 @@
 layout: page
 title: "EKS Cluster Creation"
 description: "Criação de cluster EKS com eksctl - Do básico ao avançado"
-permalink: /01-eks-cluster/
+permalink: /01-EKS-Create-Cluster-using-eksctl/
 ---
 
 <div class="container py-5">
@@ -182,7 +182,7 @@ permalink: /01-eks-cluster/
           <h3 class="card-title">🚀 Próximos Passos</h3>
           <p class="card-text">Após criar seu cluster EKS, continue para:</p>
           <div class="d-flex justify-content-center gap-3">
-            <a href="/02-docker/" class="btn btn-primary">
+            <a href="/02-Docker-Fundamentals/" class="btn btn-primary">
               <i class="fas fa-arrow-right me-2"></i>
               Docker Fundamentals
             </a>

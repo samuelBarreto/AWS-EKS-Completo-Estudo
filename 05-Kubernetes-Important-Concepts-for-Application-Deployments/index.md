@@ -2,7 +2,7 @@
 layout: page
 title: "Kubernetes - Conceitos Importantes"
 description: "Secrets, ConfigMaps, Probes, Requests/Limits e Namespaces"
-permalink: /05-kubernetes-concepts/
+permalink: /05-Kubernetes-Important-Concepts-for-Application-Deployments/
 ---
 
 <div class="container py-5">

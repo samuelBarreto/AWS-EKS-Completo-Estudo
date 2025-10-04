@@ -2,7 +2,7 @@
 layout: page
 title: "Docker Fundamentals"
 description: "Conceitos básicos do Docker - Containers, Images, Registry"
-permalink: /02-docker/
+permalink: /02-Docker-Fundamentals/
 ---
 
 <div class="container py-5">
@@ -171,7 +171,7 @@ CMD ["nginx", "-g", "daemon off;"]</code></pre>
           <h3 class="card-title">🚀 Próximos Passos</h3>
           <p class="card-text">Após dominar Docker, continue para:</p>
           <div class="d-flex justify-content-center gap-3">
-            <a href="/03-kubernetes/" class="btn btn-primary">
+            <a href="/03-Kubernetes-Fundamentals/" class="btn btn-primary">
               <i class="fas fa-arrow-right me-2"></i>
               Kubernetes Fundamentals
             </a>
