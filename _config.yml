@@ -1,0 +1,138 @@
+title: "AWS EKS Kubernetes Masterclass"
+description: "Curso completo de Kubernetes na AWS - Do básico ao avançado"
+baseurl: ""
+url: "https://samuelbarreto.github.io"
+
+# Autor
+author:
+  name: "Samuel Campos Andrade"
+  email: "samukacfc1@gmail.com"
+
+# Tema
+theme: minima
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Navegação Principal
+navigation:
+  - title: "🏠 Home"
+    url: "/"
+  - title: "📚 Fundamentos"
+    url: "/fundamentos/"
+  - title: "🐳 Docker"
+    url: "/docker/"
+  - title: "☸️ Kubernetes"
+    url: "/kubernetes/"
+  - title: "🚀 EKS & AWS"
+    url: "/eks-aws/"
+  - title: "📊 Monitoramento"
+    url: "/monitoring/"
+  - title: "🔄 DevOps"
+    url: "/devops/"
+
+# Navegação Secundária por Módulos
+modules:
+  fundamentals:
+    title: "Fundamentos"
+    items:
+      - title: "01 - EKS Cluster Creation"
+        url: "/01-eks-cluster/"
+        description: "Criação de cluster EKS com eksctl"
+      - title: "02 - Docker Fundamentals"
+        url: "/02-docker/"
+        description: "Conceitos básicos do Docker"
+      - title: "03 - Kubernetes Fundamentals"
+        url: "/03-kubernetes/"
+        description: "Arquitetura e conceitos básicos do K8s"
+
+  storage:
+    title: "Storage & Databases"
+    items:
+      - title: "04 - EBS Elastic Block Store"
+        url: "/04-eks-storage-ebs/"
+        description: "Armazenamento com EBS no EKS"
+      - title: "05 - Application Deployments"
+        url: "/05-kubernetes-concepts/"
+        description: "Secrets, ConfigMaps, Probes, etc."
+      - title: "06 - RDS Database Integration"
+        url: "/06-eks-storage-rds/"
+        description: "Integração com RDS"
+
+  loadbalancers:
+    title: "Load Balancers"
+    items:
+      - title: "07 - Classic & Network LB"
+        url: "/07-elb-classic-network/"
+        description: "Load balancers clássicos e de rede"
+      - title: "08 - Application Load Balancer"
+        url: "/08-alb-ingress/"
+        description: "ALB e Ingress Controller"
+      - title: "19 - Network LB with LBC"
+        url: "/19-elb-network-lbc/"
+        description: "NLB com Load Balancer Controller"
+
+  advanced:
+    title: "Conceitos Avançados"
+    items:
+      - title: "09 - Fargate Workloads"
+        url: "/09-fargate/"
+        description: "Executando workloads no Fargate"
+      - title: "10 - ECR Integration"
+        url: "/10-ecr/"
+        description: "Elastic Container Registry"
+
+  microservices:
+    title: "Microservices"
+    items:
+      - title: "12 - Microservices Deployment"
+        url: "/12-microservices/"
+        description: "Deploy de microserviços no EKS"
+      - title: "13 - Distributed Tracing"
+        url: "/13-xray-tracing/"
+        description: "Rastreamento com AWS X-Ray"
+      - title: "14 - Canary Deployments"
+        url: "/14-canary/"
+        description: "Deployments canário"
+
+  scaling:
+    title: "Autoscaling"
+    items:
+      - title: "15 - HPA"
+        url: "/15-hpa/"
+        description: "Horizontal Pod Autoscaler"
+      - title: "16 - VPA"
+        url: "/16-vpa/"
+        description: "Vertical Pod Autoscaler"
+      - title: "17 - Cluster Autoscaler"
+        url: "/17-cluster-autoscaler/"
+        description: "Autoescalamento do cluster"
+
+  monitoring:
+    title: "Monitoramento"
+    items:
+      - title: "18 - CloudWatch Insights"
+        url: "/18-monitoring/"
+        description: "Monitoramento com CloudWatch"
+
+  devops:
+    title: "DevOps"
+    items:
+      - title: "11 - AWS Developer Tools"
+        url: "/11-devops-aws/"
+        description: "Integração com GitHub e AWS Tools"
+
+# Configurações de exibição
+show_excerpts: true
+excerpt_separator: "<!--more-->"
+
+# Social links
+social:
+  github: seu-usuario
+  linkedin: seu-usuario
+
+# Google Analytics (opcional)
+#google_analytics: GA_MEASUREMENT_ID
