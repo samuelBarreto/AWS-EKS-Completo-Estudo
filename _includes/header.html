@@ -1,39 +1,69 @@
-<header class="site-header" role="banner">
-
-  <div class="wrapper">
-    {%- assign default_paths = site.pages | map: "path" -%}
-    {%- assign page_paths = site.header_pages | default: default_paths -%}
-    
-    <a class="site-title" rel="author" href="{{ "/" | relative_url }}">
-      <i class="fas fa-cube"></i>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{{ "/" | relative_url }}">
+      <i class="fas fa-cube me-2"></i>
       {{ site.title | escape }}
     </a>
 
-    {%- if page_paths -%}
-      <nav class="site-nav">
-        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
-        <label for="nav-trigger">
-          <span class="menu-icon">
-            <svg viewBox="0 0 18 15" width="18px" height="15px">
-              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
-            </svg>
-          </span>
-        </label>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <div class="trigger">
-          <a class="page-link" href="{{ "/" | relative_url }}">🏠 Home</a>
-          <a class="page-link" href="{{ "/01-eks-cluster/" | relative_url }}">🚀 EKS</a>
-          <a class="page-link" href="{{ "/02-docker/" | relative_url }}">🐳 Docker</a>
-          <a class="page-link" href="{{ "/03-kubernetes/" | relative_url }}">☸️ K8s</a>
-          <a class="page-link" href="{{ "/05-kubernetes-concepts/" | relative_url }}">🔐 Security</a>
-          <a class="page-link" href="{{ "/blog/" | relative_url }}">📝 Blog</a>
-          
-          <!-- Dark mode toggle -->
-          <button id="dark-mode-toggle" class="page-link" style="background: none; border: none; cursor: pointer;">
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ "/" | relative_url }}">
+            <i class="fas fa-home me-1"></i>Home
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="fundamentosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-rocket me-1"></i>Fundamentos
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="fundamentosDropdown">
+            <li><a class="dropdown-item" href="{{ "/01-eks-cluster/" | relative_url }}">🚀 EKS Cluster</a></li>
+            <li><a class="dropdown-item" href="{{ "/02-docker/" | relative_url }}">🐳 Docker</a></li>
+            <li><a class="dropdown-item" href="{{ "/03-kubernetes/" | relative_url }}">☸️ Kubernetes</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="avancadoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-cogs me-1"></i>Avançado
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="avancadoDropdown">
+            <li><a class="dropdown-item" href="{{ "/05-kubernetes-concepts/" | relative_url }}">🔐 Security & Config</a></li>
+            <li><a class="dropdown-item" href="{{ "/09-fargate/" | relative_url }}">🚀 Fargate</a></li>
+            <li><a class="dropdown-item" href="{{ "/10-ecr/" | relative_url }}">📦 ECR</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="awsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fab fa-aws me-1"></i>AWS
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="awsDropdown">
+            <li><a class="dropdown-item" href="{{ "/04-eks-storage-ebs/" | relative_url }}">💾 EBS Storage</a></li>
+            <li><a class="dropdown-item" href="{{ "/06-eks-storage-rds/" | relative_url }}">🗄️ RDS</a></li>
+            <li><a class="dropdown-item" href="{{ "/11-devops-aws/" | relative_url }}">🔄 DevOps</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ "/blog/" | relative_url }}">
+            <i class="fas fa-blog me-1"></i>Blog
+          </a>
+        </li>
+        <li class="nav-item">
+          <button id="dark-mode-toggle" class="btn btn-outline-light btn-sm ms-2" data-bs-toggle="tooltip" title="Alternar tema">
             <i class="fas fa-moon"></i>
           </button>
-        </div>
-      </nav>
-    {%- endif -%}
+        </li>
+      </ul>
+    </div>
   </div>
-</header>
+</nav>
+
+<!-- Add top padding to body to account for fixed navbar -->
+<style>
+body {
+  padding-top: 76px;
+}
+</style>
