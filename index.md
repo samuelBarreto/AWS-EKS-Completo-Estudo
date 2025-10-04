@@ -1,14 +1,14 @@
 ---
-layout: default
-title: "AWS EKS Kubernetes Masterclass"
+layout: home
+title: "AWS EKS Kubernetes"
 description: "Curso completo de Kubernetes na AWS - Do básico ao avançado"
 ---
 
-# 🚀 AWS EKS Kubernetes Masterclass
+# 🚀 AWS EKS Kubernetes
 
 Bem-vindo ao curso completo de **Kubernetes na AWS**! Este é o seu guia definitivo para dominar o Elastic Kubernetes Service (EKS) e todos os conceitos relacionados.
 
-## 📚 Módulos do Curso
+## 📚 Módulos
 
 ### 🎯 **Fundamentos**
 - [01 - EKS Cluster Creation](/01-eks-cluster/) - Criação de cluster EKS com eksctl
@@ -91,11 +91,10 @@ Bem-vindo ao curso completo de **Kubernetes na AWS**! Este é o seu guia definit
 - 🚀 **Desenvolvedores** que querem aprender DevOps com K8s
 - 🎓 **Iniciantes** em Kubernetes e AWS EKS
 
-## 💎 **O que Este Curso Oferece**
+## 💎 **O que Oferece**
 - 🎯 **Experiências Práticas** passo-a-passo
 - 🏗️ **Implementação Real** em ambiente AWS
 - 🤝 **Suporte Amigável** na seção Q&A
-- 🔒 **Garantia de 30 dias** sem perguntas
 
 ## 🚀 **Como Começar**
 1. **Sequencial**: Siga os módulos em ordem para aprendizado completo

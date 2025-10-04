@@ -21,3 +21,12 @@ presentation/
 images/
 README copy.md
 
+# Jekyll & Bundle
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+vendor/
+.bundle/
+Gemfile.lock
+

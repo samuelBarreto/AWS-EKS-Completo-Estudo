@@ -1,0 +1,218 @@
+---
+layout: default
+---
+
+<div class="home">
+  {%- if page.title -%}
+    <h1 class="page-heading">{{ page.title }}</h1>
+  {%- endif -%}
+
+  {{ content }}
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">🚀 AWS EKS Kubernetes Masterclass</h1>
+      <p class="hero-subtitle">Curso completo de Kubernetes na AWS - Do básico ao avançado</p>
+      <div class="hero-actions">
+        <a href="#modules" class="btn btn-primary">
+          <i class="fas fa-play"></i>
+          Começar Agora
+        </a>
+        <a href="#about" class="btn btn-secondary">
+          <i class="fas fa-info-circle"></i>
+          Saiba Mais
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modules Grid -->
+  <section id="modules" class="modules-section">
+    <h2 class="section-title">📚 Módulos do Curso</h2>
+    
+    <div class="module-grid">
+      <!-- Fundamentos -->
+      <div class="module-card">
+        <div class="module-icon">🎯</div>
+        <h3 class="module-title">Fundamentos</h3>
+        <p class="module-description">Base sólida em EKS, Docker e Kubernetes</p>
+        <ul class="module-links">
+          <li><a href="/01-eks-cluster/">01 - EKS Cluster Creation</a></li>
+          <li><a href="/02-docker/">02 - Docker Fundamentals</a></li>
+          <li><a href="/03-kubernetes/">03 - Kubernetes Fundamentals</a></li>
+        </ul>
+      </div>
+
+      <!-- Storage & Databases -->
+      <div class="module-card">
+        <div class="module-icon">💾</div>
+        <h3 class="module-title">Storage & Databases</h3>
+        <p class="module-description">Armazenamento e integração com bancos de dados</p>
+        <ul class="module-links">
+          <li><a href="/04-eks-storage-ebs/">04 - EBS Elastic Block Store</a></li>
+          <li><a href="/05-kubernetes-concepts/">05 - Application Deployments</a></li>
+          <li><a href="/06-eks-storage-rds/">06 - RDS Database Integration</a></li>
+        </ul>
+      </div>
+
+      <!-- Load Balancers -->
+      <div class="module-card">
+        <div class="module-icon">⚖️</div>
+        <h3 class="module-title">Load Balancers</h3>
+        <p class="module-description">Distribuição de tráfego e alta disponibilidade</p>
+        <ul class="module-links">
+          <li><a href="/07-elb-classic-network/">07 - Classic & Network LB</a></li>
+          <li><a href="/08-alb-ingress/">08 - Application Load Balancer</a></li>
+          <li><a href="/19-elb-network-lbc/">19 - Network LB with LBC</a></li>
+        </ul>
+      </div>
+
+      <!-- Conceitos Avançados -->
+      <div class="module-card">
+        <div class="module-icon">🚀</div>
+        <h3 class="module-title">Conceitos Avançados</h3>
+        <p class="module-description">Fargate, ECR e integrações avançadas</p>
+        <ul class="module-links">
+          <li><a href="/09-fargate/">09 - Fargate Workloads</a></li>
+          <li><a href="/10-ecr/">10 - ECR Integration</a></li>
+        </ul>
+      </div>
+
+      <!-- Microservices -->
+      <div class="module-card">
+        <div class="module-icon">🏗️</div>
+        <h3 class="module-title">Microservices</h3>
+        <p class="module-description">Arquitetura de microserviços e observabilidade</p>
+        <ul class="module-links">
+          <li><a href="/12-microservices/">12 - Microservices Deployment</a></li>
+          <li><a href="/13-xray-tracing/">13 - Distributed Tracing</a></li>
+          <li><a href="/14-canary/">14 - Canary Deployments</a></li>
+        </ul>
+      </div>
+
+      <!-- Autoscaling -->
+      <div class="module-card">
+        <div class="module-icon">📈</div>
+        <h3 class="module-title">Autoscaling</h3>
+        <p class="module-description">Autoescalamento horizontal, vertical e de cluster</p>
+        <ul class="module-links">
+          <li><a href="/15-hpa/">15 - HPA</a></li>
+          <li><a href="/16-vpa/">16 - VPA</a></li>
+          <li><a href="/17-cluster-autoscaler/">17 - Cluster Autoscaler</a></li>
+        </ul>
+      </div>
+
+      <!-- Monitoramento & DevOps -->
+      <div class="module-card">
+        <div class="module-icon">📊</div>
+        <h3 class="module-title">Monitoramento & DevOps</h3>
+        <p class="module-description">Observabilidade e automação de pipelines</p>
+        <ul class="module-links">
+          <li><a href="/18-monitoring/">18 - CloudWatch Insights</a></li>
+          <li><a href="/11-devops-aws/">11 - AWS Developer Tools</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about-section">
+    <div class="about-content">
+      <h2 class="section-title">🎯 O que Você Vai Aprender</h2>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📖</div>
+          <h3>Conceitos Kubernetes</h3>
+          <ul>
+            <li>✅ 30+ conceitos Kubernetes fundamentais</li>
+            <li>✅ Abordagens imperativas e declarativas</li>
+            <li>✅ Manifestos Kubernetes com confiança</li>
+            <li>✅ Comandos kubectl essenciais</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">☁️</div>
+          <h3>Serviços AWS</h3>
+          <ul>
+            <li>✅ 18+ serviços AWS em combinação com EKS</li>
+            <li>✅ EKS - Elastic Kubernetes Service</li>
+            <li>✅ ECR - Elastic Container Registry</li>
+            <li>✅ EBS, RDS, ELB, CloudWatch</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🛠️</div>
+          <h3>Implementações Práticas</h3>
+          <ul>
+            <li>✅ Storage: EBS CSI Driver, PVC, MySQL</li>
+            <li>✅ Load Balancers: Classic, Network, Application</li>
+            <li>✅ Ingress: SSL, SSL Redirect, External DNS</li>
+            <li>✅ Fargate: Perfis avançados e workloads mistos</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <h3>DevOps & Microservices</h3>
+          <ul>
+            <li>✅ AWS Code Services: CodeCommit, CodeBuild, CodePipeline</li>
+            <li>✅ Service Discovery e Distributed Tracing</li>
+            <li>✅ Canary Deployments</li>
+            <li>✅ Autoscaling: HPA, VPA, Cluster Autoscaler</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2>🚀 Pronto para Começar?</h2>
+      <p>Escolha um módulo e comece sua jornada no Kubernetes agora mesmo!</p>
+      <div class="cta-actions">
+        <a href="/01-eks-cluster/" class="btn btn-primary btn-large">
+          <i class="fas fa-rocket"></i>
+          Começar com EKS
+        </a>
+        <a href="/02-docker/" class="btn btn-secondary btn-large">
+          <i class="fas fa-docker"></i>
+          Começar com Docker
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Posts -->
+  {% if site.posts.size > 0 %}
+  <section class="latest-posts">
+    <h2 class="section-title">📝 Últimos Posts</h2>
+    <div class="posts-grid">
+      {% for post in site.posts limit: 3 %}
+        <article class="post-card">
+          <div class="post-card-header">
+            <h3 class="post-card-title">
+              <a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+            </h3>
+            <div class="post-card-meta">
+              <span class="post-date">{{ post.date | date: "%d/%m/%Y" }}</span>
+              <span class="post-category">{{ post.categories | first }}</span>
+            </div>
+          </div>
+          <div class="post-card-content">
+            {{ post.excerpt | strip_html | truncate: 150 }}
+          </div>
+          <div class="post-card-footer">
+            <a href="{{ post.url | relative_url }}" class="btn btn-small">Ler Mais</a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+</div>
