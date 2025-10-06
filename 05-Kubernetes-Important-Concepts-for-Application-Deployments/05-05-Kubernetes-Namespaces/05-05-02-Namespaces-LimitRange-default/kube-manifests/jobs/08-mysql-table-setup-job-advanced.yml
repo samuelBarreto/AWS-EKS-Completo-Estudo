@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mysql-table-setup-advanced
+  labels:
+    app: mysql-setup
+  namespace: dev3 
+spec:
+  template:
+    metadata:
+      labels:
+        app: mysql-setup
+    spec:
+      restartPolicy: Never
+      initContainers:
+      - name: wait-for-mysql
+        image: busybox:1.35
+        command: ['sh', '-c']
+        args:
+          - |
+            echo "Aguardando MySQL estar pronto..."
+            until nc -z mysql 3306; do
+              echo "MySQL não está pronto ainda, aguardando..."
+              sleep 2
+            done
+            echo "MySQL está pronto!"
+      containers:
+      - name: mysql-setup
+        image: mysql:5.6
+        command: ["sh", "-c"]
+        args:
+          - |
+            echo "Conectando ao MySQL..."
+            mysql -h mysql -u root -pdbpassword11 -e "
+            USE usermgmt;
+            CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                email VARCHAR(100) UNIQUE NOT NULL,
+                age INT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            );
+            SHOW TABLES;
+            DESCRIBE users;
+            SELECT 'Tabela users criada com sucesso!' as status;
+            "
+            echo "Setup do banco concluído!"
+        env:
+        - name: MYSQL_PWD
+          value: "dbpassword11"
+  backoffLimit: 3

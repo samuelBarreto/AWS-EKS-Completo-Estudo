@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: usermgmt-microservice-nodeport
+  labels:
+    app: usermgmt-restapp
+  namespace: dev3   
+spec:
+  type: NodePort
+  ports:
+  - port: 3000
+    targetPort: 3000
+    nodePort: 30090
+    protocol: TCP
+    name: http
+  selector:
+    app: usermgmt-restapp
