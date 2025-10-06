@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mysql-client
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: mysql-client
+          image: mysql:latest
+          command: ["sh", "-c"]
+          args:
+            - >
+              mysql -h usermgmtdb.c5jqxzxrhrno.us-east-1.rds.amazonaws.com
+              -u admin -pdbpassword11 -e "SHOW DATABASES;"
