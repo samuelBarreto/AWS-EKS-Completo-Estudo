@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: usermgmt-microservice
+  labels:
+    app: usermgmt-restapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: usermgmt-restapp
+  template:  
+    metadata:
+      labels: 
+        app: usermgmt-restapp
+    spec:
+      initContainers:
+       - name: init-db
+         image: busybox:1.31
+         command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL DB Server has started";']      
+      containers:
+        - name: usermgmt-restapp
+          image: 1234samue/aula:user-management-api-1.0.0
+          ports: 
+            - containerPort: 3000
+              name: http
+          env:
+            - name: DB_HOST
+              value: "mysql"            
+            - name: DB_PORT
+              value: "3306"            
+            - name: DB_NAME
+              value: "usermgmt"            
+            - name: DB_USER
+              value: "root"            
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-db-password
+                  key: db-password
+            - name: PORT
+              value: "3000"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
