@@ -30,7 +30,9 @@ spec:
             - name: DB_PORT
               value: "3306"            
             - name: DB_NAME
-              value: "usermgmt"             
+              value: "usermgmt"            
+            - name: DB_USERNAME
+              value: "appuser"  
             - name: DB_USER
               value: "appuser"  
             - name: DB_PASSWORD
