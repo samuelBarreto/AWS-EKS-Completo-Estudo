@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mysql-sample-data
+  labels:
+    app: mysql-sample-data
+spec:
+  template:
+    metadata:
+      labels:
+        app: mysql-sample-data
+    spec:
+      restartPolicy: Never
+      initContainers:
+      - name: wait-for-mysql
+        image: busybox:1.35
+        command: ['sh', '-c']
+        args:
+          - |
+            echo "Aguardando MySQL estar pronto..."
+            until nc -z mysql 3306; do
+              echo "MySQL não está pronto ainda, aguardando..."
+              sleep 2
+            done
+            echo "MySQL está pronto!"
+      containers:
+      - name: mysql-sample-data
+        image: mysql:5.6
+        command: ["sh", "-c"]
+        args:
+          - |
+            set -e
+            echo "Aguardando tabela users existir..."
+            until [ "$(mysql -h mysql -u root -pdbpassword11 -N -s -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='usermgmt' AND table_name='users';")" = "1" ]; do
+              echo "Tabela users ainda não existe, aguardando..."
+              sleep 2
+            done
+            echo "Tabela users encontrada. Inserindo dados de exemplo..."
+            mysql -h mysql -u root -pdbpassword11 -e "
+            USE usermgmt;
+            INSERT IGNORE INTO users (name, email, age) VALUES
+            ('João Silva', 'joao.silva@email.com', 30),
+            ('Maria Santos', 'maria.santos@email.com', 25),
+            ('Pedro Oliveira', 'pedro.oliveira@email.com', 35),
+            ('Ana Costa', 'ana.costa@email.com', 28),
+            ('Carlos Lima', 'carlos.lima@email.com', 42);
+            SELECT 'Dados de exemplo inseridos:' as status;
+            SELECT id, name, email, age, created_at FROM users ORDER BY id;
+            SELECT COUNT(*) as total_users FROM users;"
+            echo "Dados de exemplo inseridos com sucesso!"
+        env:
+        - name: MYSQL_PWD
+          value: "dbpassword11"
+  backoffLimit: 3
