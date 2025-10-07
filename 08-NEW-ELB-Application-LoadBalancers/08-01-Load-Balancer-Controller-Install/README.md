@@ -316,58 +316,40 @@ Events:              <none>
 
 ✅ **Importante:** A annotation `eks.amazonaws.com/role-arn` confirma que a IAM Role está vinculada à Service Account.
 
-## Passo-04: Instalar o AWS Load Balancer Controller usando Helm V3 
-### Passo-04-01: Instalar Helm
+## Passo-04: Instalar o AWS Load Balancer Controller usando Helm
 
-- [Instalar Helm](https://helm.sh/docs/intro/install/) se não instalado
-- [Instalar Helm para AWS EKS](https://docs.aws.amazon.com/eks/latest/userguide/helm.html)
+### Passo-04-01: Verificar e instalar Helm (se necessário)
 
 ```bash
-# Instalar Helm (se não instalado) MacOS
-brew install helm
-
-# Verificar versão do Helm
+# Verificar se o Helm está instalado
 helm version
+
+# Se não estiver instalado:
+# MacOS/Linux: brew install helm
+# Windows: choco install kubernetes-helm
+# Ou siga: https://helm.sh/docs/intro/install/
 ```
 
-### Passo-04-02: Instalar AWS Load Balancer Controller
-- **Nota Importante 1:** Se você está fazendo deploy do controller em Amazon EC2 nodes que têm acesso restrito ao Amazon EC2 instance metadata service (IMDS), ou se está fazendo deploy no Fargate, então adicione as seguintes flags ao comando:
+### Passo-04-02: Preparar informações necessárias
 
 ```bash
---set region=region-code
---set vpcId=vpc-xxxxxxxx
+# Obter o VPC ID do cluster
+aws eks describe-cluster --name eksdemo1 --query "cluster.resourcesVpcConfig.vpcId" --output text
+
+# Exemplo de output: vpc-03c78d451fba11905
 ```
 
-- **Nota Importante 2:** **DESCONTINUADO** 
-  - Se você está fazendo deploy em qualquer Região que não seja us-west-2, então adicione a seguinte flag ao comando, substituindo account e region-code com os valores da sua região listados em Amazon EKS add-on container image addresses.
-- [Obter Region Code e Account info](https://docs.aws.amazon.com/eks/latest/userguide/add-ons-images.html)
+### Passo-04-03: Instalar o AWS Load Balancer Controller
 
 ```bash
---set image.repository=account.dkr.ecr.region-code.amazonaws.com/amazon/aws-load-balancer-controller
-```
-
-- **Nota Importante 3:** **ADICIONADO RECENTEMENTE - RECOMENDADO** 
-  - Você não precisa mais usar URIs de imagem específicas por região.
-
-```bash
-# Adicionar o repositório eks-charts
+# 1. Adicionar o repositório Helm do EKS
 helm repo add eks https://aws.github.io/eks-charts
 
-# Atualizar seu repositório local para ter certeza que tem os charts mais recentes
-helm repo update
+# 2. Atualizar repositórios locais
+helm repo update eks
 
-# Instalar o AWS Load Balancer Controller
-## Template
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
-  -n kube-system \
-  --set clusterName=<cluster-name> \
-  --set serviceAccount.create=false \
-  --set serviceAccount.name=aws-load-balancer-controller \
-  --set region=<region-code> \
-  --set vpcId=<vpc-xxxxxxxx> \
-  --set image.repository=public.ecr.aws/eks/aws-load-balancer-controller
-
-## Substituir Cluster Name, Region Code, VPC ID, Image Repo Account ID e Region Code  
+# 3. Instalar o AWS Load Balancer Controller
+# ⚠️ Substitua o VPC ID pelo seu (obtido no comando anterior)
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   -n kube-system \
   --set clusterName=eksdemo1 \
@@ -377,18 +359,17 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --set vpcId=vpc-03c78d451fba11905 \
   --set image.repository=public.ecr.aws/eks/aws-load-balancer-controller
 ```
-- **Exemplo de output para passos de instalação do AWS Load Balancer Controller**
-```bash
-## Exemplo de Output para passos de instalação do AWS Load Balancer Controller
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
-  -n kube-system \
-  --set clusterName=eksdemo1 \
-  --set serviceAccount.create=false \
-  --set serviceAccount.name=aws-load-balancer-controller \
-  --set region=us-east-1 \
-  --set vpcId=vpc-03c78d451fba11905 \
-  --set image.repository=public.ecr.aws/eks/aws-load-balancer-controller
 
+**📝 Explicação dos parâmetros:**
+- `clusterName`: Nome do cluster EKS
+- `serviceAccount.create=false`: Não cria service account (já criamos no Passo-03)
+- `serviceAccount.name`: Nome da service account existente
+- `region`: Região AWS do cluster
+- `vpcId`: VPC ID onde o cluster está rodando
+- `image.repository`: Repositório público da imagem (não precisa mais de repositório específico por região)
+
+**📋 Exemplo de Output:**
+```bash
 NAME: aws-load-balancer-controller
 LAST DEPLOYED: Tue Oct  7 16:27:50 2025
 NAMESPACE: kube-system
@@ -397,167 +378,188 @@ REVISION: 1
 TEST SUITE: None
 NOTES:
 AWS Load Balancer controller installed!
-
 ```
-### Passo-04-03: Verificar que o controller foi instalado e Webhook Service criado
+
+**💡 Notas Importantes:**
+- ✅ Para EC2 nodes com IMDS restrito ou Fargate, os parâmetros `region` e `vpcId` são obrigatórios (já incluídos acima)
+- ✅ A imagem pública `public.ecr.aws/eks/aws-load-balancer-controller` funciona em todas as regiões
+- ❌ Não é mais necessário usar repositórios ECR específicos por região
+
+### Passo-04-04: Verificar a instalação
+
+**a) Verificar Deployment:**
 ```bash
-# Verificar que o controller foi instalado
-kubectl -n kube-system get deployment 
+# Listar todos os deployments no kube-system
+kubectl -n kube-system get deployment
 
-NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
-aws-load-balancer-controller   2/2     2            2           26s
-coredns                        2/2     2            2           25m
-ebs-csi-controller             0/2     2            0           20m
-metrics-server                 2/2     2            2           25m
-
+# Verificar especificamente o Load Balancer Controller
 kubectl -n kube-system get deployment aws-load-balancer-controller
 
-NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
-aws-load-balancer-controller   2/2     2            2           49s
+# Output esperado:
+# NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+# aws-load-balancer-controller   2/2     2            2           49s
 
+# Ver detalhes do deployment
 kubectl -n kube-system describe deployment aws-load-balancer-controller
+```
 
+**b) Verificar Pods:**
+```bash
+# Listar pods do Load Balancer Controller
+kubectl -n kube-system get pods -l app.kubernetes.io/name=aws-load-balancer-controller
 
-# Verificar se o AWS Load Balancer Controller Webhook service foi criado
-kubectl -n kube-system get svc 
+# Verificar status dos pods (devem estar Running)
+kubectl -n kube-system get pods -l app.kubernetes.io/name=aws-load-balancer-controller -o wide
+```
+
+**c) Verificar Webhook Service:**
+```bash
+# Listar o webhook service
 kubectl -n kube-system get svc aws-load-balancer-webhook-service
+
+# Output esperado:
+# NAME                                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+# aws-load-balancer-webhook-service   ClusterIP   10.100.53.52    <none>        443/TCP   2m
+
+# Ver detalhes do service
 kubectl -n kube-system describe svc aws-load-balancer-webhook-service
-
-# Exemplo de Output
-kubectl -n kube-system get svc aws-load-balancer-webhook-service
-NAME                                TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
-aws-load-balancer-webhook-service   ClusterIP   10.100.53.52   <none>        443/TCP   61m
-
-
-# Verificar Labels no Service e Selector Labels no Deployment
-kubectl -n kube-system get svc aws-load-balancer-webhook-service -o yaml
-
-Observação:
-1. Verificar label "spec.selector" em "aws-load-balancer-webhook-service"
-2. Comparar com "aws-load-balancer-controller" Deployment "spec.selector.matchLabels"
-3. Ambos os valores devem ser iguais, o que significa que o tráfego chegando em "aws-load-balancer-webhook-service" na porta 443 será enviado para porta 9443 nos pods relacionados ao deployment "aws-load-balancer-controller". 
 ```
 
-### Passo-04-04: Verificar Logs do AWS Load Balancer Controller
+**d) Verificar Labels e Selectors:**
 ```bash
-# Listar Pods
-kubectl get pods -n kube-system
+# Verificar labels do Service
+kubectl -n kube-system get svc aws-load-balancer-webhook-service -o jsonpath='{.spec.selector}' | jq
 
-# Revisar logs do AWS LB Controller POD-1
-kubectl -n kube-system logs -f <POD-NAME> 
-kubectl -n kube-system logs -f  aws-load-balancer-controller-86b598cbd6-5pjfk
-
-# Revisar logs do AWS LB Controller POD-2
-kubectl -n kube-system logs -f <POD-NAME> 
-kubectl -n kube-system logs -f aws-load-balancer-controller-86b598cbd6-vqqsk
+# Verificar labels do Deployment
+kubectl -n kube-system get deployment aws-load-balancer-controller -o jsonpath='{.spec.selector.matchLabels}' | jq
 ```
 
-### Passo-04-05: Verificar AWS Load Balancer Controller k8s Service Account - Internals 
+**📝 Importante:** Os selectors do Service devem corresponder aos labels do Deployment. Isso garante que o tráfego chegando no webhook service (porta 443) seja roteado para os pods do controller (porta 9443).
+
+### Passo-04-05: Verificar Logs do Controller
+
 ```bash
-# Listar Service Account e seu secret
-kubectl -n kube-system get sa aws-load-balancer-controller
+# Listar pods do Load Balancer Controller
+kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
+
+# Verificar logs do primeiro pod (replica 1)
+kubectl -n kube-system logs -f deployment/aws-load-balancer-controller --all-containers=true --tail=50
+
+# Ou verificar logs de um pod específico
+kubectl -n kube-system logs -f <POD-NAME>
+
+# Exemplo:
+# kubectl -n kube-system logs -f aws-load-balancer-controller-86b598cbd6-5pjfk
+```
+
+**✅ Logs esperados (indicando sucesso):**
+- Mensagens sobre leader election
+- Registro de webhook server iniciado
+- Sem erros de autenticação ou permissão
+- Mensagem: "controller started"
+
+### Passo-04-06: (Opcional) Verificar Internals - Service Account e IRSA
+
+**🔍 Para entender como funciona a integração IAM-Kubernetes (IRSA):**
+
+```bash
+# 1. Verificar Service Account
 kubectl -n kube-system get sa aws-load-balancer-controller -o yaml
-kubectl -n kube-system get secret
-kubectl -n kube-system get secret <OBTER_DO_COMANDO_ANTERIOR - secrets.name> -o yaml
-kubectl -n kube-system get secret sh.helm.release.v1.aws-load-balancer-controller.v1 
-kubectl -n kube-system get secret sh.helm.release.v1.aws-load-balancer-controller.v1 -o yaml
-## Decodificar ca.crt usando os dois websites abaixo
-https://www.base64decode.org/
-https://www.sslchecker.com/certdecoder
 
-## Decodificar token usando os dois websites abaixo
-https://www.base64decode.org/
-https://jwt.io/
-Observação:
-1. Revisar o JWT Token decodificado
+# 2. Verificar Deployment (Service Account está referenciado)
+kubectl -n kube-system get deploy aws-load-balancer-controller -o jsonpath='{.spec.template.spec.serviceAccountName}'
 
-# Listar Deployment em formato YAML
-kubectl -n kube-system get deploy aws-load-balancer-controller -o yaml
+# 3. Verificar Pod (como as credenciais AWS são montadas)
+POD_NAME=$(kubectl -n kube-system get pods -l app.kubernetes.io/name=aws-load-balancer-controller -o jsonpath='{.items[0].metadata.name}')
+kubectl -n kube-system get pod $POD_NAME -o yaml | grep -A 10 "aws-iam-token"
 
-Observação:
-1. Verificar "spec.template.spec.serviceAccount" e "spec.template.spec.serviceAccountName" no Deployment "aws-load-balancer-controller"
-2. Devemos encontrar o Service Account Name como "aws-load-balancer-controller"
-
-# Listar Pods em formato YAML
-kubectl -n kube-system get pods
-kubectl -n kube-system get pod <AWS-Load-Balancer-Controller-POD-NAME> -o yaml
-kubectl -n kube-system get pod aws-load-balancer-controller-65b4f64d6c-h2vh4 -o yaml
-
-Observação:
-1. Verificar "spec.serviceAccount" e "spec.serviceAccountName"
-2. Devemos encontrar o Service Account Name como "aws-load-balancer-controller"
-3. Verificar "spec.volumes". Você deve encontrar algo como abaixo, que são credenciais temporárias para acessar AWS Services
-CHECK-1: Verificar "spec.volumes.name = aws-iam-token"
-  - name: aws-iam-token
-    projected:
-      defaultMode: 420
-      sources:
-      - serviceAccountToken:
-          audience: sts.amazonaws.com
-          expirationSeconds: 86400
-          path: token
-CHECK-2: Verificar Volume Mounts
-    volumeMounts:
-    - mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
-      name: aws-iam-token
-      readOnly: true          
-CHECK-3: Verificar ENVs cujo nome do path é "token"
-    - name: AWS_WEB_IDENTITY_TOKEN_FILE
-      value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token          
+# O que procurar:
+# - Volume "aws-iam-token" projetado com token da service account
+# - MountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+# - Env var: AWS_WEB_IDENTITY_TOKEN_FILE aponta para o token
 ```
 
-### Passo-04-06: Verificar Certificados TLS para AWS Load Balancer Controller - Internals
+**💡 Como funciona:**
+1. Pod usa a Service Account `aws-load-balancer-controller`
+2. Kubernetes monta um token JWT no pod
+3. AWS SDK usa esse token para assumir a IAM Role via OIDC
+4. Role fornece credenciais temporárias para acessar AWS APIs
+
+### Passo-04-07: (Opcional) Verificar Certificados TLS do Webhook
+
 ```bash
-# Listar secret aws-load-balancer-tls
-kubectl -n kube-system get secret aws-load-balancer-tls -o yaml
+# Verificar secret TLS do webhook
+kubectl -n kube-system get secret aws-load-balancer-tls -o jsonpath='{.data.tls\.crt}' | base64 -d | openssl x509 -text -noout | grep -A 1 "Subject:"
 
-# Verificar ca.crt e tls.crt nos websites abaixo
-https://www.base64decode.org/
-https://www.sslchecker.com/certdecoder
-
-# Anotar Common Name e SAN do resultado acima
-Common Name: aws-load-balancer-controller
-SAN: aws-load-balancer-webhook-service.kube-system, aws-load-balancer-webhook-service.kube-system.svc
-
-# Listar Pods em formato YAML
-kubectl -n kube-system get pods
-kubectl -n kube-system get pod <AWS-Load-Balancer-Controller-POD-NAME> -o yaml
-kubectl -n kube-system get pod aws-load-balancer-controller-65b4f64d6c-h2vh4 -o yaml
-Observação:
-1. Verificar como o secret está montado no AWS Load Balancer Controller Pod
-CHECK-2: Verificar Volume Mounts
-    volumeMounts:
-    - mountPath: /tmp/k8s-webhook-server/serving-certs
-      name: cert
-      readOnly: true
-CHECK-3: Verificar Volumes
-  volumes:
-  - name: cert
-    secret:
-      defaultMode: 420
-      secretName: aws-load-balancer-tls
+# Verificar como está montado no pod
+POD_NAME=$(kubectl -n kube-system get pods -l app.kubernetes.io/name=aws-load-balancer-controller -o jsonpath='{.items[0].metadata.name}')
+kubectl -n kube-system get pod $POD_NAME -o yaml | grep -A 5 "serving-certs"
 ```
 
-### Passo-04-07: DESINSTALAR AWS Load Balancer Controller usando Comando Helm (Informação - NÃO EXECUTAR ESTE COMANDO)
-- Este passo não deve ser implementado
-- Está aqui apenas para sabermos como desinstalar o aws load balancer controller do EKS Cluster
+**📝 Certificados TLS:** O controller usa certificados TLS para comunicação segura do webhook. O Helm chart gerencia isso automaticamente.
+
+---
+
+## ✅ Checklist Final de Instalação
+
+- [ ] EKS Cluster criado com OIDC Provider
+- [ ] Pod Identity Agent instalado
+- [ ] EBS CSI Driver instalado e funcionando
+- [ ] IAM Policy `AWSLoadBalancerControllerIAMPolicy` criada
+- [ ] IAM Role e Service Account vinculados (IRSA)
+- [ ] AWS Load Balancer Controller instalado via Helm
+- [ ] 2 replicas do controller em estado Running
+- [ ] Webhook service criado e funcionando
+- [ ] Logs do controller sem erros
+
+---
+
+## 🗑️ Desinstalação (Apenas para Referência)
+
+**⚠️ NÃO EXECUTE estes comandos agora!** Apenas para referência futura:
+
 ```bash
 # Desinstalar AWS Load Balancer Controller
-helm uninstall aws-load-balancer-controller -n kube-system 
+helm uninstall aws-load-balancer-controller -n kube-system
+
+# Deletar IAM Service Account
+eksctl delete iamserviceaccount \
+  --cluster=eksdemo1 \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller
+
+# Deletar IAM Policy
+aws iam delete-policy \
+  --policy-arn arn:aws:iam::390214104376:policy/AWSLoadBalancerControllerIAMPolicy
 ```
 
+---
 
 
-## Passo-05: Conceito de Ingress Class
-- Entender o que é Ingress Class 
-- Entender como ela substitui a annotation descontinuada padrão `#kubernetes.io/ingress.class: "alb"`
-- [Referência de Documentação Ingress Class](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/ingress_class/)
-- [Diferentes Ingress Controllers disponíveis hoje](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)
 
+## Passo-05: Entender o Conceito de IngressClass
 
-## Passo-06: Revisar Manifesto Kubernetes IngressClass
-- **Localização do Arquivo:** `08-01-Load-Balancer-Controller-Install/kube-manifests/01-ingressclass-resource.yaml`
-- Entender em detalhes sobre a annotation `ingressclass.kubernetes.io/is-default-class: "true"`
+### O que é IngressClass?
+
+O **IngressClass** é um recurso do Kubernetes que define qual controlador de Ingress deve processar um recurso Ingress específico.
+
+**📚 Por que usar IngressClass?**
+- Substitui a annotation descontinuada `kubernetes.io/ingress.class: "alb"`
+- Permite múltiplos controllers de Ingress no mesmo cluster
+- Facilita a gestão de diferentes tipos de load balancers
+
+**🔗 Referências:**
+- [AWS Load Balancer Controller - IngressClass](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/ingress_class/)
+- [Kubernetes - Ingress Controllers](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)
+
+---
+
+## Passo-06: Criar e Aplicar IngressClass Padrão
+
+### Passo-06-01: Revisar o Manifesto IngressClass
+
+**📁 Arquivo:** `kube-manifests/01-ingressclass-resource.yaml`
+
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: IngressClass
@@ -567,28 +569,106 @@ metadata:
     ingressclass.kubernetes.io/is-default-class: "true"
 spec:
   controller: ingress.k8s.aws/alb
-
-## Nota Adicional
-# 1. Você pode marcar uma IngressClass específica como padrão para seu cluster. 
-# 2. Definir a annotation ingressclass.kubernetes.io/is-default-class como true em um recurso IngressClass garantirá que novos Ingresses sem um campo ingressClassName especificado serão atribuídos a esta IngressClass padrão.  
-# 3. Referência: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.3/guide/ingress/ingress_class/
 ```
 
-## Passo-07: Criar Recurso IngressClass
+**📝 Explicação:**
+- `name: my-aws-ingress-class` - Nome da IngressClass (pode ser qualquer nome)
+- `ingressclass.kubernetes.io/is-default-class: "true"` - Define como IngressClass padrão do cluster
+- `controller: ingress.k8s.aws/alb` - Especifica que o AWS Load Balancer Controller gerenciará os Ingresses
+
+**💡 IngressClass Padrão:**
+- Quando marcada como `default`, todos os recursos Ingress **sem** `ingressClassName` especificado usarão esta classe automaticamente
+- Só deve haver **uma** IngressClass padrão por cluster
+
+### Passo-06-02: Aplicar o Manifesto IngressClass
+
 ```bash
-# Navegar para o Diretório
-cd 08-01-Load-Balancer-Controller-Install
+# Navegar até o diretório
+cd 08-NEW-ELB-Application-LoadBalancers/08-01-Load-Balancer-Controller-Install
 
-# Criar Recurso IngressClass
-kubectl apply -f kube-manifests
+# Aplicar o manifesto
+kubectl apply -f kube-manifests/01-ingressclass-resource.yaml
 
-# Verificar Recurso IngressClass
+# Verificar se foi criado
+kubectl get ingressclass
+```
+
+**📋 Output esperado:**
+```
+NAME                   CONTROLLER            PARAMETERS   AGE
+my-aws-ingress-class   ingress.k8s.aws/alb   <none>       10s
+```
+
+### Passo-06-03: Verificar IngressClass
+
+```bash
+# Listar todas as IngressClasses
 kubectl get ingressclass
 
-# Descrever Recurso IngressClass
+# Ver detalhes
 kubectl describe ingressclass my-aws-ingress-class
+
+# Ver em YAML
+kubectl get ingressclass my-aws-ingress-class -o yaml
 ```
 
-## Referências
-- [Instalação do AWS Load Balancer Controller](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html)
-- [Repositório ECR por região](https://docs.aws.amazon.com/eks/latest/userguide/add-ons-images.html)
+**✅ Verificar:**
+- Annotation `ingressclass.kubernetes.io/is-default-class: "true"` presente
+- Controller: `ingress.k8s.aws/alb`
+
+---
+
+## 🎉 Instalação Completa!
+
+Parabéns! Você instalou com sucesso o **AWS Load Balancer Controller** no seu cluster EKS.
+
+**🚀 Próximos Passos:**
+1. Criar aplicações de exemplo
+2. Configurar recursos Ingress para expor as aplicações
+3. O AWS Load Balancer Controller criará automaticamente Application Load Balancers (ALBs)
+
+**📖 Recursos úteis:**
+- [AWS Load Balancer Controller - Documentação](https://kubernetes-sigs.github.io/aws-load-balancer-controller/)
+- [Exemplos de Ingress](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/)
+- [Troubleshooting](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/deploy/troubleshooting/)
+
+---
+
+## 📚 Referências e Documentação
+
+- [AWS EKS - AWS Load Balancer Controller](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html)
+- [AWS Load Balancer Controller - GitHub](https://github.com/kubernetes-sigs/aws-load-balancer-controller)
+- [AWS Load Balancer Controller - Documentação Oficial](https://kubernetes-sigs.github.io/aws-load-balancer-controller/)
+- [Kubernetes - Ingress Controllers](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)
+- [EKS Add-ons - Container Images por Região](https://docs.aws.amazon.com/eks/latest/userguide/add-ons-images.html)
+
+---
+
+## 🆘 Troubleshooting Comum
+
+**Problema:** Pods do controller não iniciam
+```bash
+# Verificar logs
+kubectl -n kube-system logs deployment/aws-load-balancer-controller
+
+# Verificar eventos
+kubectl -n kube-system get events --sort-by='.lastTimestamp'
+```
+
+**Problema:** Erro de permissão IAM
+```bash
+# Verificar se a IAM Role está corretamente vinculada
+kubectl -n kube-system describe sa aws-load-balancer-controller | grep Annotations
+
+# Testar permissões AWS CLI
+aws sts get-caller-identity
+```
+
+**Problema:** Webhook não está funcionando
+```bash
+# Verificar webhook service
+kubectl -n kube-system get svc aws-load-balancer-webhook-service
+
+# Verificar certificados
+kubectl -n kube-system get secret aws-load-balancer-tls
+```
