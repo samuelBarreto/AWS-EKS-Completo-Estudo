@@ -13,11 +13,11 @@ Neste tutorial, vamos implementar **roteamento baseado em context path** (caminh
 
 Implantar 3 aplicações Nginx no Kubernetes com roteamento baseado em path:
 
-| Path | Destino | Aplicação |
-|------|---------|-----------|
-| `/app1/*` | app1-nginx-nodeport-service | Nginx App1 |
-| `/app2/*` | app2-nginx-nodeport-service | Nginx App2 |
-| `/*` | app3-nginx-nodeport-service | Nginx App3 (padrão) |
+| Path      | Destino                     | Aplicação           |
+|-----------|-----------------------------|---------------------|
+| `/app1/*` | app1-nginx-nodeport-service | Nginx App1          |
+| `/app2/*` | app2-nginx-nodeport-service | Nginx App2          |
+| `/*`      | app3-nginx-nodeport-service | Nginx App3 (padrão) |
 
 ### 📋 Arquitetura de Roteamento
 
@@ -56,12 +56,12 @@ As 3 aplicações são muito similares, diferindo apenas em:
 #### **App1 Nginx**
 **📁 Arquivo:** `01-Nginx-App1-Deployment-and-NodePortService.yml`
 
-| Campo | Valor |
-|-------|-------|
-| **Image** | `1234samue/aula:kubenginx-1.0.0` |
-| **Health Check Path** | `/app1/index.html` |
-| **Service Name** | `app1-nginx-nodeport-service` |
-| **Deployment Name** | `app1-nginx-deployment` |
+| Campo                 | Valor                             |
+|-----------------------|-----------------------------------|
+| **Image**             | `1234samue/aula:kubenginx-app1-1.0.0`  |
+| **Health Check Path** | `/app1/index.html`                |
+| **Service Name**      | `app1-nginx-nodeport-service`     |
+| **Deployment Name**   | `app1-nginx-deployment`           |
 
 **Health Check Annotation no Service:**
 ```yaml
@@ -72,12 +72,12 @@ annotations:
 #### **App2 Nginx**
 **📁 Arquivo:** `02-Nginx-App2-Deployment-and-NodePortService.yml`
 
-| Campo | Valor |
-|-------|-------|
-| **Image** | `1234samue/aula:kubenginx-2.0.0` |
-| **Health Check Path** | `/app2/index.html` |
-| **Service Name** | `app2-nginx-nodeport-service` |
-| **Deployment Name** | `app2-nginx-deployment` |
+| Campo                 | Valor                             | 
+|-----------------------|-----------------------------------|
+| **Image**             | `1234samue/aula:kubenginx-app2-1.0.0`  |
+| **Health Check Path** | `/app2/index.html`                |
+| **Service Name**      | `app2-nginx-nodeport-service`     |
+| **Deployment Name**   | `app2-nginx-deployment`           |
 
 **Health Check Annotation no Service:**
 ```yaml
@@ -88,12 +88,12 @@ annotations:
 #### **App3 Nginx**
 **📁 Arquivo:** `03-Nginx-App3-Deployment-and-NodePortService.yml`
 
-| Campo | Valor |
-|-------|-------|
-| **Image** | `1234samue/aula:kubenginx-3.0.0` |
-| **Health Check Path** | `/index.html` |
-| **Service Name** | `app3-nginx-nodeport-service` |
-| **Deployment Name** | `app3-nginx-deployment` |
+| Campo                 | Valor                             |
+|-----------------------|-----------------------------------|
+| **Image**             | `1234samue/aula:kubenginx-app3-1.0.0`  |
+| **Health Check Path** | `/index.html`                     |
+| **Service Name**      | `app3-nginx-nodeport-service`     |
+| **Deployment Name**   | `app3-nginx-deployment`           |
 
 **Health Check Annotation no Service:**
 ```yaml
@@ -170,11 +170,11 @@ spec:
 
 ### 📝 Explicação das Regras de Roteamento
 
-| Path | pathType | Backend Service | Comportamento |
-|------|----------|-----------------|---------------|
-| `/app1` | Prefix | app1-nginx-nodeport-service | Corresponde a `/app1`, `/app1/`, `/app1/*` |
-| `/app2` | Prefix | app2-nginx-nodeport-service | Corresponde a `/app2`, `/app2/`, `/app2/*` |
-| `/` | Prefix | app3-nginx-nodeport-service | Corresponde a qualquer path (catch-all) |
+| Path    | pathType | Backend Service             | Comportamento                              |
+|---------|----------|-----------------------------|--------------------------------------------|
+| `/app1` | Prefix   | app1-nginx-nodeport-service | Corresponde a `/app1`, `/app1/`, `/app1/*` |
+| `/app2` | Prefix   | app2-nginx-nodeport-service | Corresponde a `/app2`, `/app2/`, `/app2/*` |
+| `/`     | Prefix   | app3-nginx-nodeport-service | Corresponde a qualquer path (catch-all)    |
 
 ### ⚠️ **IMPORTANTE: Ordem das Regras**
 

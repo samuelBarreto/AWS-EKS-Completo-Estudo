@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: app2-nginx
-          image: 1234samue/aula:kubenginx-2.0.0
+          image: 1234samue/aula:kubenginx-app2-1.0.0
           ports:
             - containerPort: 80
 ---
